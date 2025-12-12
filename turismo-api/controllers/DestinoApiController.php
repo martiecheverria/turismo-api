@@ -63,8 +63,6 @@ class DestinoApiController {
     //MÉTODOS PROTEGIDOS (POST, PUT, DELETE)
 
     public function deleteDestino($request, $response) {
-     
-
         $id = $request->params->ID;
         $destino = $this->modelDestino->getDestinoById($id);
 
@@ -76,20 +74,21 @@ class DestinoApiController {
         }
     }
 
-    public function createDestino($request, $response) {
+   public function createDestino($request, $response) {
+        $json = file_get_contents('php://input');
+        $body = json_decode($json);
 
-
-        // Validación de campos (usando $request->body)
-        if (!isset($request->body->nombre) || !isset($request->body->descripcion) || !isset($request->body->id_region_fk)) {
+        // Validación de campos obligatorios
+        if (empty($body->nombre) || empty($body->descripcion) || empty($body->id_region_fk)) {
             return $response->json('Faltan campos obligatorios', 400);
         }
 
-        $nombre = $request->body->nombre;
-        $descripcion = $request->body->descripcion;
-        $id_region = $request->body->id_region_fk;
-        $img = isset($request->body->imagen_url) ? $request->body->imagen_url : null;
+        $nombre = $body->nombre;
+        $descripcion = $body->descripcion;
+        $id_region = $body->id_region_fk;
+        $img = isset($body->imagen_url) ? $body->imagen_url : null;
 
-        // Validación FK
+        // Validación FK (Region)
         if (!$this->modelRegion->getRegionById($id_region)) {
             return $response->json('La región indicada no existe', 404);
         }
@@ -113,15 +112,19 @@ class DestinoApiController {
             return $response->json("No existe el destino con id=$id", 404);
         }
 
+        // Leemos el JSON
+        $json = file_get_contents('php://input');
+        $body = json_decode($json);
+
         // Validación campos
-        if (!isset($request->body->nombre) || !isset($request->body->descripcion) || !isset($request->body->id_region_fk)) {
+        if (empty($body->nombre) || empty($body->descripcion) || empty($body->id_region_fk)) {
             return $response->json('Faltan campos obligatorios', 400);
         }
 
-        $nombre = $request->body->nombre;
-        $descripcion = $request->body->descripcion;
-        $id_region = $request->body->id_region_fk;
-        $img = isset($request->body->imagen_url) ? $request->body->imagen_url : $destinoActual->imagen_url;
+        $nombre = $body->nombre;
+        $descripcion = $body->descripcion;
+        $id_region = $body->id_region_fk;
+        $img = isset($body->imagen_url) ? $body->imagen_url : $destinoActual->imagen_url;
 
         // Validación FK
         if (!$this->modelRegion->getRegionById($id_region)) {
@@ -152,3 +155,4 @@ class DestinoApiController {
         return false;
     }
 }
+
