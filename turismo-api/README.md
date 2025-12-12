@@ -75,16 +75,6 @@ HTTP
 
 #### ---
 
-**Obtener todas las regiones**
-
-HTTP
-
-  GET ../api/regiones
-
-| Parametro | tipo | Descripción |
-| :---- | :---- | :---- |
-| ninguno | \- | Retorna un arreglo de todas las regiones disponibles |
-
 ### **🔐Endpoints de Administración (ABM)**
 
 HTTP
